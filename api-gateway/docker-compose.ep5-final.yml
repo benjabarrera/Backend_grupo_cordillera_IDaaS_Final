@@ -1,0 +1,49 @@
+# Cuarto archivo Compose: usar despues del original, messaging e integracion-kafka.
+services:
+  ventas:
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-cordillera}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:?Define RABBITMQ_DEFAULT_PASS en .env}
+    depends_on:
+      rabbitmq:
+        condition: service_started
+  ms-alertas:
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-cordillera}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:?Define RABBITMQ_DEFAULT_PASS en .env}
+    depends_on:
+      rabbitmq:
+        condition: service_started
+  kafka-admin:
+    build: ../kafka-admin
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092,kafka-2:29092
+      EP5_ADMIN_TOKEN: ${EP5_ADMIN_TOKEN:?Define EP5_ADMIN_TOKEN en .env}
+    depends_on:
+      - kafka
+      - kafka-2
+    networks:
+      - cordillera-net
+    # Sin ports: acceso desde el Gateway en la red Docker; nunca exponer a Internet.
+  rabbit-admin:
+    build: ../rabbit-admin
+    environment:
+      RABBIT_MGMT_URL: http://rabbitmq:15672
+      RABBIT_MGMT_USERNAME: ${RABBITMQ_DEFAULT_USER:-cordillera}
+      RABBIT_MGMT_PASSWORD: ${RABBITMQ_DEFAULT_PASS:?Define RABBITMQ_DEFAULT_PASS en .env}
+      EP5_ADMIN_TOKEN: ${EP5_ADMIN_TOKEN:?Define EP5_ADMIN_TOKEN en .env}
+    depends_on:
+      - rabbitmq
+    networks:
+      - cordillera-net
+  api-gateway:
+    depends_on:
+      - kafka-admin
+      - rabbit-admin
+    environment:
+      KAFKA_ADMIN_URL: http://kafka-admin:8091
+      RABBIT_ADMIN_URL: http://rabbit-admin:8092

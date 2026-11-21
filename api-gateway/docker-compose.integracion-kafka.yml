@@ -1,0 +1,26 @@
+# EP5: integrar Kafka a los servicios existentes sin reemplazar docker-compose.yml
+services:
+  ventas:
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092,kafka-2:29092
+    depends_on:
+      kafka:
+        condition: service_started
+      kafka-2:
+        condition: service_started
+  inventario:
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092,kafka-2:29092
+    depends_on:
+      kafka:
+        condition: service_started
+      kafka-2:
+        condition: service_started
+  ms-alertas:
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092,kafka-2:29092
+    depends_on:
+      kafka:
+        condition: service_started
+      kafka-2:
+        condition: service_started

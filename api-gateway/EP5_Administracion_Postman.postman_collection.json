@@ -1,0 +1,464 @@
+{
+  "info": {
+    "name": "EP5 Grupo Cordillera - Administracion autenticada",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Flujos EP5. Usar token Entra SUPER_ADMIN legitimo y X-EP5-Admin-Key; ejecutar DELETE solo al final."
+  },
+  "item": [
+    {
+      "name": "01 Kafka listar topics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/kafka/topics"
+      }
+    },
+    {
+      "name": "02 Kafka crear ep5-validacion-final",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/kafka/topics",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"ep5-validacion-final\",\n  \"particiones\": 3,\n  \"replicacion\": 2,\n  \"retentionMs\": 3600000,\n  \"cleanupPolicy\": \"delete\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "03 Kafka modificar retencion",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/kafka/topics/ep5-validacion-final/config",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"retention.ms\": \"7200000\",\n  \"cleanup.policy\": \"delete\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "04 Kafka consultar topic",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/kafka/topics/ep5-validacion-final"
+      }
+    },
+    {
+      "name": "05 Kafka listar consumer groups",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/kafka/groups"
+      }
+    },
+    {
+      "name": "06 Kafka offsets de ventas",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/kafka/groups/cordillera-alertas-ventas/offsets"
+      }
+    },
+    {
+      "name": "07 Kafka eliminar topic temporal",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/kafka/topics/ep5-validacion-final?confirm=true"
+      }
+    },
+    {
+      "name": "08 Rabbit listar colas",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/rabbit/queues"
+      }
+    },
+    {
+      "name": "09 Rabbit crear exchange",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/rabbit/exchanges/ep5.demo"
+      }
+    },
+    {
+      "name": "10 Rabbit crear cola",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/rabbit/queues/ep5.demo"
+      }
+    },
+    {
+      "name": "11 Rabbit crear binding",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/rabbit/bindings",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exchange\": \"ep5.demo\",\n  \"queue\": \"ep5.demo\",\n  \"routingKey\": \"ep5.audit\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "12 Rabbit listar bindings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/rabbit/bindings"
+      }
+    },
+    {
+      "name": "13 Rabbit eliminar binding",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/rabbit/bindings",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exchange\": \"ep5.demo\",\n  \"queue\": \"ep5.demo\",\n  \"routingKey\": \"ep5.audit\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "14 Rabbit eliminar cola",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/rabbit/queues/ep5.demo"
+      }
+    },
+    {
+      "name": "15 Rabbit eliminar exchange",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "X-EP5-Admin-Key",
+            "value": "{{adminKey}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "url": "{{gatewayUrl}}/admin/rabbit/exchanges/ep5.demo"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "adminKey",
+      "value": ""
+    }
+  ]
+}

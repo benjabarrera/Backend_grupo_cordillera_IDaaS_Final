@@ -1,0 +1,56 @@
+# EP5 - DEMOSTRACION AISLADA DEL CLUSTER RABBITMQ (NO mezclar con los otros Compose).
+# Esta prueba usa puertos 15673 y 15674 y volúmenes propios; el broker de negocio
+# sigue en 15672 y sus colas originales NO se modifican.
+# En api-gateway: docker compose -f docker-compose.rabbit-cluster.yml up -d
+services:
+  rabbitmq-cluster-1:
+    image: rabbitmq:3.13-management
+    hostname: rabbitmq-cluster-1
+    environment:
+      RABBITMQ_NODENAME: rabbit@rabbitmq-cluster-1
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:?Configura una cookie privada en .env}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:?Configura RabbitMQ en .env}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:?Configura RabbitMQ en .env}
+    volumes:
+      - ep5-demo-cluster1-data:/var/lib/rabbitmq
+      - ./rabbit-cluster.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    ports:
+      - "127.0.0.1:15673:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 18
+    networks:
+      - rabbitmq-cluster-demo
+
+  rabbitmq-cluster-2:
+    image: rabbitmq:3.13-management
+    hostname: rabbitmq-cluster-2
+    environment:
+      RABBITMQ_NODENAME: rabbit@rabbitmq-cluster-2
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE:?Configura una cookie privada en .env}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:?Configura RabbitMQ en .env}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:?Configura RabbitMQ en .env}
+    volumes:
+      - ep5-demo-cluster2-data:/var/lib/rabbitmq
+      - ./rabbit-cluster.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    ports:
+      - "127.0.0.1:15674:15672"
+    depends_on:
+      rabbitmq-cluster-1:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 18
+    networks:
+      - rabbitmq-cluster-demo
+
+networks:
+  rabbitmq-cluster-demo:
+    driver: bridge
+volumes:
+  ep5-demo-cluster1-data:
+  ep5-demo-cluster2-data:

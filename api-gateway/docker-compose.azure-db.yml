@@ -1,0 +1,40 @@
+# Quinto archivo Compose: agregar despues de docker-compose.ep5-final.yml.
+# Completar AZURE_PG_HOST, AZURE_PG_USER y AZURE_PG_PASSWORD en api-gateway/.env.
+# Las bases cloud comienzan vacias; este archivo no migra los datos locales.
+x-azure-datasource: &azure-datasource
+  SPRING_DATASOURCE_USERNAME: ${AZURE_PG_USER:?Define AZURE_PG_USER en .env}
+  SPRING_DATASOURCE_PASSWORD: ${AZURE_PG_PASSWORD:?Define AZURE_PG_PASSWORD en .env}
+  # Seis servicios x 3 conexiones = 18; deja margen en el servidor B1ms.
+  SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: "3"
+  SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: "1"
+
+services:
+  authentication:
+    environment:
+      <<: *azure-datasource
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${AZURE_PG_HOST:?Define AZURE_PG_HOST en .env}:5432/bd_auth?sslmode=require&connectTimeout=15
+
+  ventas:
+    environment:
+      <<: *azure-datasource
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${AZURE_PG_HOST:?Define AZURE_PG_HOST en .env}:5432/bd_ventas?sslmode=require&connectTimeout=15
+
+  inventario:
+    environment:
+      <<: *azure-datasource
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${AZURE_PG_HOST:?Define AZURE_PG_HOST en .env}:5432/bd_inventario?sslmode=require&connectTimeout=15
+
+  finanzas:
+    environment:
+      <<: *azure-datasource
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${AZURE_PG_HOST:?Define AZURE_PG_HOST en .env}:5432/bd_finanzas?sslmode=require&connectTimeout=15
+
+  clientes:
+    environment:
+      <<: *azure-datasource
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${AZURE_PG_HOST:?Define AZURE_PG_HOST en .env}:5432/bd_clientes?sslmode=require&connectTimeout=15
+
+  ms-alertas:
+    environment:
+      <<: *azure-datasource
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${AZURE_PG_HOST:?Define AZURE_PG_HOST en .env}:5432/bd_alertas?sslmode=require&connectTimeout=15
